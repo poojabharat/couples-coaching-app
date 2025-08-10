@@ -1,0 +1,238 @@
+{
+  "advice_blocks": [
+    {
+      "id": "comm1",
+      "domain": "communication",
+      "title": "I-Statements + Listener Reflector",
+      "body": "Replace blame with ownership. Practice reflective listening.",
+      "steps": [
+        "Use: When X happens, I feel Y, and I need Z.",
+        "Listener paraphrases and validates before responding.",
+        "Schedule 10 minutes daily for this ritual."
+      ],
+      "resources": [
+        "https://www.gottman.com/blog/how-to-fight-right/"
+      ],
+      "severity": 2
+    },
+    {
+      "id": "trust1",
+      "domain": "trust",
+      "title": "Safety First: Boundaries & Transparency",
+      "body": "Set clear, mutual boundaries and short feedback loops to rebuild safety.",
+      "steps": [
+        "Agree 3 non-negotiable boundaries each.",
+        "Weekly trust check-in: What built trust? What eroded it?",
+        "If breach occurs, follow repair script within 24h."
+      ],
+      "resources": [
+        "https://www.psychologytoday.com/us/basics/trust"
+      ],
+      "severity": 3
+    },
+    {
+      "id": "conflict1",
+      "domain": "conflict",
+      "title": "Time-Out & Repair Protocol",
+      "body": "Prevent escalation; prioritize repair over victory.",
+      "steps": [
+        "Define time-out cue; step away 20\u201340 minutes.",
+        "Return with softened start-up: feelings + needs.",
+        "End with a small repair gesture."
+      ],
+      "resources": [
+        "https://www.gottman.com/blog/the-aftermath-of-a-fight/"
+      ],
+      "severity": 3
+    },
+    {
+      "id": "intimacy1",
+      "domain": "intimacy",
+      "title": "Connection Windows & Non-Sexual Touch",
+      "body": "Schedule intimacy that doesn\u2019t depend on spontaneity.",
+      "steps": [
+        "Two 30-min windows per week, mutually agreed.",
+        "5-minute daily non-sexual touch ritual.",
+        "Discuss accelerators/brakes using yes/no/maybe lists."
+      ],
+      "resources": [
+        "https://www.emilynagoski.com/"
+      ],
+      "severity": 2
+    },
+    {
+      "id": "time1",
+      "domain": "time",
+      "title": "Protected Quality Time",
+      "body": "Designate screen-free micro-dates.",
+      "steps": [
+        "Two 45-min screen-free blocks weekly.",
+        "Walk-and-talk checklist; share one appreciation each.",
+        "Sunday planning: 15-min calendar sync."
+      ],
+      "resources": [],
+      "severity": 1
+    },
+    {
+      "id": "money1",
+      "domain": "money",
+      "title": "Money Date + Values-Based Budget",
+      "body": "Align spending with shared values; reduce blame loops.",
+      "steps": [
+        "List top 3 values; map to budget categories.",
+        "Weekly 20-min money date (facts \u2192 feelings \u2192 decisions).",
+        "Create frictionless default for savings."
+      ],
+      "resources": [
+        "https://www.ramseysolutions.com/relationships/relationship-and-money"
+      ],
+      "severity": 2
+    },
+    {
+      "id": "family1",
+      "domain": "family",
+      "title": "Boundary Scripts with Extended Family",
+      "body": "Present a united front; pre-agree scripts.",
+      "steps": [
+        "Define 3 boundary scripts for common scenarios.",
+        "Signal support: partner speaks first in their family context.",
+        "Debrief post-visit for wins & tweaks."
+      ],
+      "resources": [],
+      "severity": 2
+    },
+    {
+      "id": "responsibility1",
+      "domain": "responsibility",
+      "title": "Fair Play Chore Rebalance",
+      "body": "Make invisible labor visible and fairly owned.",
+      "steps": [
+        "Inventory top 10 tasks with owner + quality bar.",
+        "Reassign 2 items weekly based on capacity.",
+        "Monthly renegotiation check-in."
+      ],
+      "resources": [
+        "https://www.fairplaylife.com/"
+      ],
+      "severity": 2
+    },
+    {
+      "id": "repair1",
+      "domain": "repair",
+      "title": "Apology That Lands",
+      "body": "Acknowledge impact, not intention; offer a make-good.",
+      "steps": [
+        "Template: I did X. Impact on you was Y. No excuses.",
+        "Ask: What would help repair this?",
+        "Schedule a symbolic repair gesture."
+      ],
+      "resources": [],
+      "severity": 3
+    },
+    {
+      "id": "wellbeing1",
+      "domain": "wellbeing",
+      "title": "Mutual Wellbeing Pact",
+      "body": "Support each other\u2019s individual growth to enrich the relationship.",
+      "steps": [
+        "Each declares one personal goal and one ask of partner support.",
+        "Weekly check-in: effort not outcomes.",
+        "Protect 1 solo recharge block per person."
+      ],
+      "resources": [],
+      "severity": 1
+    }
+  ],
+  "advice_rules": [
+    {
+      "domain": "communication",
+      "condition": {
+        "min_gap": 15,
+        "max_avg_score": 70
+      },
+      "priority": 1,
+      "advice_block_id": "comm1"
+    },
+    {
+      "domain": "trust",
+      "condition": {
+        "min_gap": 10,
+        "max_avg_score": 75
+      },
+      "priority": 1,
+      "advice_block_id": "trust1"
+    },
+    {
+      "domain": "conflict",
+      "condition": {
+        "min_gap": 10,
+        "max_avg_score": 75
+      },
+      "priority": 1,
+      "advice_block_id": "conflict1"
+    },
+    {
+      "domain": "intimacy",
+      "condition": {
+        "min_gap": 10,
+        "max_avg_score": 70
+      },
+      "priority": 1,
+      "advice_block_id": "intimacy1"
+    },
+    {
+      "domain": "time",
+      "condition": {
+        "min_gap": 10,
+        "max_avg_score": 70
+      },
+      "priority": 2,
+      "advice_block_id": "time1"
+    },
+    {
+      "domain": "money",
+      "condition": {
+        "min_gap": 10,
+        "max_avg_score": 75
+      },
+      "priority": 2,
+      "advice_block_id": "money1"
+    },
+    {
+      "domain": "family",
+      "condition": {
+        "min_gap": 10,
+        "max_avg_score": 75
+      },
+      "priority": 2,
+      "advice_block_id": "family1"
+    },
+    {
+      "domain": "responsibility",
+      "condition": {
+        "min_gap": 10,
+        "max_avg_score": 75
+      },
+      "priority": 2,
+      "advice_block_id": "responsibility1"
+    },
+    {
+      "domain": "repair",
+      "condition": {
+        "min_gap": 10,
+        "max_avg_score": 75
+      },
+      "priority": 1,
+      "advice_block_id": "repair1"
+    },
+    {
+      "domain": "wellbeing",
+      "condition": {
+        "min_gap": 10,
+        "max_avg_score": 75
+      },
+      "priority": 3,
+      "advice_block_id": "wellbeing1"
+    }
+  ]
+}

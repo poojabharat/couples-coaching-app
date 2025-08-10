@@ -1,0 +1,26 @@
+# Node & package managers
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Builds / caches
+dist/
+.build/
+.cache/
+.vite/
+.next/
+out/
+coverage/
+
+# Env & secrets
+.env
+.env.*
+server/.env
+frontend/.env
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

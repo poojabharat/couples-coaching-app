@@ -1,0 +1,14 @@
+{
+  "name": "relationship-assessment-fullstack",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "server",
+    "frontend"
+  ],
+  "scripts": {
+    "build": "npm --prefix frontend run build",
+    "start": "node server/src/app.js",
+    "dev": "npm --prefix server run dev"
+  }
+}
