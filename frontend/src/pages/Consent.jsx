@@ -1,18 +1,6 @@
 import React, { useState } from 'react'
 import { useAppStore } from '../store'
-import { supabase } from '../supabaseClient'
-
-const API = ''
-
-async function authFetch(path, opts={}) {
-  const { data: { session } } = await supabase.auth.getSession()
-  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) }
-  if (session?.access_token) headers['Authorization'] = `Bearer ${session.access_token}`
-  const res = await fetch(`${API}${path}`, { ...opts, headers })
-  const json = await res.json()
-  if (!res.ok) throw new Error(json.error || 'Request failed')
-  return json
-}
+import { authFetchJson } from '../lib/api'
 
 export default function Consent() {
   const coupleId = useAppStore(s => s.coupleId)
@@ -22,7 +10,7 @@ export default function Consent() {
 
   async function save() {
     if (!coupleId) return alert('Join a couple first')
-    await authFetch('/consents', {
+    await authFetchJson('/consents', {
       method: 'POST',
       body: JSON.stringify({
         couple_id: coupleId,

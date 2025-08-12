@@ -29,6 +29,32 @@ An Express API that proxies to Supabase using **Row Level Security**. The server
 - `POST /consents` → set sharing preferences
 - `GET /couples/:id/report` → JSON report (only after both partners complete)
 
+## PDF Export
+
+Partner-authenticated (requires `Authorization: Bearer <token>`):
+
+- `GET /export/report/:coupleId` — Couple Report PDF (consent-safe)
+- `GET /export/plan/:coupleId` — Personalized Plan PDF (2-week structure)
+
+Coach (requires coach session cookie):
+
+- `POST /coach/login` { email, password } → sets `coach_session` cookie
+- `GET /coach/export/report/:coupleId` — Coach Report PDF with Executive Summary
+- `GET /coach/export/plan/:coupleId` — Coach Plan PDF
+- `POST /coach/logout` → clears session
+
+Example (Coach):
+```
+# login
+curl -i -c cookies.txt -H 'Content-Type: application/json' \
+  -d '{"email":"support@poojabharat.com","password":"<password>"}' \
+  http://localhost:8080/coach/login
+
+# export using session cookie
+curl -b cookies.txt -o coach-report.pdf \
+  http://localhost:8080/coach/export/report/<couple-id>
+```
+
 ## Railway
 
 - Set environment variables in Railway to match `.env`.
@@ -53,5 +79,7 @@ npm run seed:advice
 This loads `/seeds/advice.seed.json` into `advice_blocks` and `advice_rules`.
 
 ### Environment
-- `COACH_API_KEY` → shared secret for coach endpoints (do not expose to client)
-- `SUPABASE_SERVICE_ROLE` → **only for one-time seeding**, not needed at runtime.
+- `FRONTEND_ORIGIN` → set in production to enable credentialed CORS (e.g., `https://app.example.com`)
+- `COACH_USER_EMAIL`, `COACH_PASSWORD` → coach sign-in credentials
+- `COACH_SESSION_SECRET` → secret for signing coach session JWT cookie
+- `SUPABASE_SERVICE_ROLE` → **only for one-time seeding**, not used at runtime.

@@ -1,26 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useAppStore } from '../store'
-import { supabase } from '../supabaseClient'
-
-const API = ''
-
-async function authFetch(path, opts={}) {
-  const { data: { session } } = await supabase.auth.getSession()
-  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) }
-  if (session?.access_token) headers['Authorization'] = `Bearer ${session.access_token}`
-  const res = await fetch(`${API}${path}`, { ...opts, headers })
-  const json = await res.json()
-  if (!res.ok) throw new Error(json.error || 'Request failed')
-  return json
-}
+import { authFetchJson, authFetchBlob } from '../lib/api'
 
 export default function Report() {
   const coupleId = useAppStore(s => s.coupleId)
   const [report, setReport] = useState(null)
+  const [downloading, setDownloading] = useState(false)
 
   useEffect(() => {
     if (!coupleId) return
-    authFetch(`/report/couple/${coupleId}`)
+    authFetchJson(`/report/couple/${coupleId}`)
       .then(setReport)
       .catch(e => alert(e.message))
   }, [coupleId])
@@ -34,6 +23,9 @@ export default function Report() {
     <div>
       <h2>Couple Report</h2>
       <p>Risk Index: <b>{report.risk_index ?? 'n/a'}</b></p>
+      <div style={{ margin: '8px 0' }}>
+        <button disabled={downloading} onClick={downloadPdf}>Download Report PDF</button>
+      </div>
       <table border="1" cellPadding="6">
         <thead>
           <tr><th>Domain</th><th>Score A</th><th>Score B</th><th>Gap</th></tr>
@@ -51,4 +43,22 @@ export default function Report() {
       </table>
     </div>
   )
+}
+
+async function downloadPdf() {
+  try {
+    const coupleId = useAppStore.getState().coupleId
+    if (!coupleId) return alert('Join a couple first')
+    const blob = await authFetchBlob(`/export/report/${coupleId}`)
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `couple-report-${coupleId}.pdf`
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+  } catch (e) {
+    alert(e.message)
+  }
 }

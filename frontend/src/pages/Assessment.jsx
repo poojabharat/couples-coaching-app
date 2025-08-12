@@ -1,17 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { supabase } from '../supabaseClient'
-
-const API = ''
-
-async function authFetch(path, opts={}) {
-  const { data: { session } } = await supabase.auth.getSession()
-  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) }
-  if (session?.access_token) headers['Authorization'] = `Bearer ${session.access_token}`
-  const res = await fetch(`${API}${path}`, { ...opts, headers })
-  const json = await res.json()
-  if (!res.ok) throw new Error(json.error || 'Request failed')
-  return json
-}
+import { authFetchJson } from '../lib/api'
 
 export default function Assessment() {
   const [assessment, setAssessment] = useState(null)
@@ -20,9 +8,9 @@ export default function Assessment() {
 
   useEffect(() => {
     (async () => {
-      const { assessment, questions } = await authFetch('/assessments/active')
+      const { assessment, questions } = await authFetchJson('/assessments/active')
       setAssessment({ ...assessment, questions })
-      await authFetch('/submissions/start', { method: 'POST' })
+      await authFetchJson('/submissions/start', { method: 'POST' })
     })().catch(err => alert(err.message))
   }, [])
 
@@ -34,7 +22,7 @@ export default function Assessment() {
     setLoading(true)
     try {
       const list = Object.values(answers)
-      await authFetch('/responses/batch', { method: 'POST', body: JSON.stringify({ responses: list }) })
+      await authFetchJson('/responses/batch', { method: 'POST', body: JSON.stringify({ responses: list }) })
       alert('Saved')
     } catch (e) {
       alert(e.message)
@@ -46,7 +34,7 @@ export default function Assessment() {
   async function complete() {
     try {
       await saveAll()
-      await authFetch('/submissions/complete', { method: 'POST' })
+      await authFetchJson('/submissions/complete', { method: 'POST' })
       alert('Submission completed!')
     } catch (e) {
       console.error(e)

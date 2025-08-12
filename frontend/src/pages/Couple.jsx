@@ -1,18 +1,7 @@
 import React, { useState } from 'react'
-import { supabase } from '../supabaseClient'
+import { authFetchJson } from '../lib/api'
 import { useAppStore } from '../store'
 
-const API = '' // same origin
-
-async function authFetch(path, opts={}) {
-  const { data: { session } } = await supabase.auth.getSession()
-  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) }
-  if (session?.access_token) headers['Authorization'] = `Bearer ${session.access_token}`
-  const res = await fetch(`${API}${path}`, { ...opts, headers })
-  const json = await res.json()
-  if (!res.ok) throw new Error(json.error || 'Request failed')
-  return json
-}
 
 export default function Couple({ session }) {
   const [pairCode, setPairCode] = useState('')
@@ -21,12 +10,12 @@ export default function Couple({ session }) {
   const setCouple = useAppStore(s => s.setCouple)
 
   async function createCouple() {
-    const data = await authFetch('/couples', { method: 'POST' })
+    const data = await authFetchJson('/couples', { method: 'POST' })
     setResult(data)
   }
 
   async function joinCouple() {
-    const data = await authFetch('/couples/join', {
+    const data = await authFetchJson('/couples/join', {
       method: 'POST',
       body: JSON.stringify({ pair_code: pairCode, label })
     })

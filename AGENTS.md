@@ -14,7 +14,7 @@ Optional spiritual insights: Palmistry (hand photos), Vedic Astrology (DOB/TOB/P
 
 System merges signals into a therapy structure (plan) that’s practical, culturally sensitive, and coach-ready.
 
-Coaches get a dashboard: risk-based triage, session planner, homework tracker, consent-aware visibility, PDFs, and calendar hooks.
+Coaches get a dashboard: risk-based triage, session planner, homework tracker, consent-aware visibility, PDFs, and calendar hooks. Coach access requires a secure server-side login (session cookie).
 
 Privacy first: RLS everywhere, consent filters for raw text and media, and clear sharing controls.
 
@@ -25,7 +25,7 @@ Frontend: Vite + React 18, React Router, Zustand
 
 DB: Supabase Postgres with RLS, SQL migrations under /server/migrations
 
-Auth: Supabase Auth (email/password)
+Auth: Supabase Auth (email/password) for partners; secure coach session login for coaches.
 
 Storage: Supabase Storage (palm images) with signed URLs
 
@@ -164,7 +164,7 @@ RLS:
 
 Partners: read/write only where couple_id in their membership.
 
-Coach: no direct RLS; coach accesses via server routes with COACH_API_KEY, which must enforce redaction.
+Coach: no direct RLS; coach accesses via server routes using a secure coach session (server login), which must enforce redaction.
 
 NLP Themes
 🆕 nlp_themes:
@@ -322,9 +322,15 @@ GET /report/couple/:id
 
 POST /plan/generate {couple_id}
 
-GET /coach/couples (coach key)
+POST /coach/login {email,password}
 
-GET /coach/couples/:id/overview (coach key)
+GET /coach/me
+
+POST /coach/logout
+
+GET /coach/couples (coach session)
+
+GET /coach/couples/:id/overview (coach session)
 
 GET /sessions?couple_id=...
 
@@ -342,7 +348,7 @@ GET /messages?couple_id=...&cursor=...
 
 POST /messages {couple_id, body} (from partner)
 
-POST /coach/messages {couple_id, body} (coach; coach key)
+POST /coach/messages {couple_id, body} (coach; coach session)
 
 Server redacts bodies for coach where share_with_coach=false or allow_raw_text=false.
 
@@ -352,7 +358,7 @@ POST /palmistry/upload (returns storage paths; requires allow_palmistry=true)
 
 GET /palmistry/me (list my submissions)
 
-GET /coach/palmistry/:coupleId (coach key; returns signed URLs only if share_media_with_coach=true)
+GET /coach/palmistry/:coupleId (coach session; returns signed URLs only if share_media_with_coach=true)
 
 Astrology:
 
@@ -376,9 +382,13 @@ GET /themes/:coupleId → aggregated themes (respect consent)
 
 PDF Export:
 
-GET /export/plan/:coupleId (partner/coach)
+GET /export/plan/:coupleId (partner)
 
-GET /export/report/:coupleId (partner/coach)
+GET /export/report/:coupleId (partner)
+
+GET /coach/export/plan/:coupleId (coach session)
+
+GET /coach/export/report/:coupleId (coach session)
 
 Calendar:
 
@@ -425,10 +435,10 @@ Numerology
 
 Create numerology_profiles.
 
-Keep existing RLS from the original schema; extend with policies for each new table to limit reads/writes to couple members. For any coach access, do not rely on RLS — use server routes + COACH_API_KEY + consent checks + redaction.
+Keep existing RLS from the original schema; extend with policies for each new table to limit reads/writes to couple members. For any coach access, do not rely on RLS — use server routes + coach session login + consent checks + redaction.
 
 8) Implementation Roadmap (order for Codex)
-PDF Export (E2) – server endpoints + buttons on Report/Plan; pdfkit or puppeteer.
+PDF Export (E2) – server endpoints + buttons on Report/Plan; pdfkit. Partner and Coach variants (coach includes Executive Summary and consent-safe content).
 
 Messaging (E3) – DB + RLS, server routes with redaction, simple chat in couple & coach dashboards.
 
@@ -453,7 +463,7 @@ Always check consent before exposing raw text, images, or derived summaries to c
 
 All partner-facing DB access uses user JWT so RLS applies.
 
-Coach views go through server with COACH_API_KEY and explicit redaction logic.
+Coach views go through server with session login and explicit redaction logic.
 
 Use signed URLs for media, short TTL, on-demand generation.
 

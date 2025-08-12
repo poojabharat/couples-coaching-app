@@ -1,29 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { useAppStore } from '../store'
-import { supabase } from '../supabaseClient'
-
-const API = ''
-
-async function authFetch(path, opts={}) {
-  const { data: { session } } = await supabase.auth.getSession()
-  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) }
-  if (session?.access_token) headers['Authorization'] = `Bearer ${session.access_token}`
-  const res = await fetch(`${API}${path}`, { ...opts, headers })
-  const json = await res.json()
-  if (!res.ok) throw new Error(json.error || 'Request failed')
-  return json
-}
+import { authFetchJson, authFetchBlob } from '../lib/api'
 
 export default function CouplePlan() {
   const coupleId = useAppStore(s => s.coupleId)
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [downloading, setDownloading] = useState(false)
 
   async function generate() {
     if (!coupleId) return alert('Join a couple first')
     setLoading(true)
     try {
-      const d = await authFetch('/plan/generate', { method: 'POST', body: JSON.stringify({ couple_id: coupleId }) })
+      const d = await authFetchJson('/plan/generate', { method: 'POST', body: JSON.stringify({ couple_id: coupleId }) })
       setData(d)
     } catch (e) {
       alert(e.message)
@@ -40,6 +29,9 @@ export default function CouplePlan() {
   return (
     <div>
       <h2>Personalized Plan</h2>
+      <div style={{ margin: '8px 0' }}>
+        <button disabled={downloading} onClick={downloadPlanPdf}>Download Plan PDF</button>
+      </div>
       <p>Risk Index: <b>{data?.meta?.risk_index ?? 'n/a'}</b></p>
       <h3>Top Issues</h3>
       <ul>
@@ -61,4 +53,22 @@ export default function CouplePlan() {
       <ul>{data.coach_checklist.map((c,i) => <li key={i}>{c}</li>)}</ul>
     </div>
   )
+}
+
+async function downloadPlanPdf() {
+  try {
+    const coupleId = useAppStore.getState().coupleId
+    if (!coupleId) return alert('Join a couple first')
+    const blob = await authFetchBlob(`/export/plan/${coupleId}`)
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `couple-plan-${coupleId}.pdf`
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+  } catch (e) {
+    alert(e.message)
+  }
 }
